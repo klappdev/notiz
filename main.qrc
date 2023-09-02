@@ -1,0 +1,54 @@
+<RCC>
+    <qresource prefix="/">
+	<file>res/i18n/notiz_en.qm</file>
+        <file>res/i18n/notiz_de.qm</file>
+
+        <file>res/style/task_style.qss</file>
+        <file>res/image/task_icon.png</file>
+
+        <file>res/image/checkbox/checkbox-on.png</file>
+        <file>res/image/checkbox/checkbox-off.png</file>
+        <file>res/image/checkbox/checked.jpeg</file>
+        <file>res/image/checkbox/unchecked.jpeg</file>		
+        
+        <file>res/image/type/favorite.png</file>
+	<file>res/image/type/complete.png</file>
+	<file>res/image/type/sort-az.png</file>
+	<file>res/image/type/sort-za.png</file>
+	<file>res/image/type/sort-day.png</file>
+	<file>res/image/type/sort-calendar.png</file>
+
+	<file>res/image/submit/trash-icon.png</file>
+	<file>res/image/submit/edit-icon.png</file>
+	<file>res/image/submit/add-icon.png</file>
+	<file>res/image/submit/similar-icon.png</file>
+	<file>res/image/submit/update-icon.png</file>
+	<file>res/image/submit/info-icon.png</file>
+
+	<file>res/image/submit/sort-icon.png</file>
+	<file>res/image/submit/search-icon.png</file>
+	<file>res/image/submit/filter-icon.png</file>
+	<file>res/image/submit/calendar-icon.png</file>
+
+	<file>res/image/submit/confirm-icon.png</file>
+	<file>res/image/submit/cancel-icon.png</file>
+
+	<file>res/image/dialog/add-task.png</file>
+	<file>res/image/dialog/edit-task.png</file>
+
+	<file>res/image/type/back.png</file>
+	<file>res/image/type/forward.png</file>
+
+	<file>res/image/arrow/drop-down.png</file>
+	<file>res/image/arrow/drop-up.png</file>
+
+	<file>res/image/country/en.png</file>
+	<file>res/image/country/de.png</file>
+
+	<file>res/image/theme/light-theme.png</file>
+	<file>res/image/theme/dark-theme.png</file>
+	
+	<file>res/image/login/login-icon.png</file>
+	<file>res/image/login/default-login.png</file>
+    </qresource>
+</RCC>
