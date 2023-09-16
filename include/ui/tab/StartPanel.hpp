@@ -32,10 +32,10 @@
 #include <QPushButton>
 #include <QToolButton>
 
-#include "event/tab/StartEvent.hpp"
+#include "event/tab/StartListener.hpp"
 #include "model/TaskModel.hpp"
 
-class StartEvent;
+class StartListener;
 
 class StartPanel final: public QGroupBox {
     Q_OBJECT
@@ -70,7 +70,7 @@ private:
     void createMenu();
 
     TaskModel* mModel;
-    StartEvent* mListener;
+    StartListener* mListener;
 
     QBoxLayout* mLayout;
     QTableView* mTable;

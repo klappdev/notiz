@@ -21,35 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE  OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#pragma once
 
-#include <QGroupBox>
-
-#include <QPushButton>
-
-#include <QBoxLayout>
-
-#include "ui/widget/TaskCalendar.hpp"
 #include "event/tab/CalendarListener.hpp"
 
-class CalendarListener;
+#include "db/TaskDao.hpp"
 
-class CalendarPanel final : public QGroupBox {
-public:
-    explicit CalendarPanel(QWidget* parent = nullptr);
-    ~CalendarPanel();
+static constexpr const char* const TAG = "[CalendarListener] ";
 
-    CalendarListener* getListener() const;
-    TaskCalendar* getCalendar() const;
+CalendarListener::CalendarListener(CalendarPanel* panel)
+    : mPanel(panel) {
+}
 
-private:
-    void initCalendar();
-    void initButtons();
+CalendarListener::~CalendarListener() {}
 
-    CalendarListener* mListener;
+void CalendarListener::showUpdateCalendar() {
+    const QList<Task> tasks = TaskDao::getInstance().getAll();
 
-    QBoxLayout* mLayout;
-    TaskCalendar* mCalendar;
+    mPanel->getCalendar()->setListTask(tasks);
+}
 
-    QPushButton* mUpdateButton;
-};
+void CalendarListener::updateCalendar(int index) {
+    Q_UNUSED(index);
+
+    const QList<Task> tasks = TaskDao::getInstance().getAll();
+
+    mPanel->getCalendar()->setListTask(tasks);
+}
+

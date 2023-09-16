@@ -22,29 +22,25 @@
  * SOFTWARE.
  */
 
-#pragma once
-
-#include <QDialog>
-#include <QCalendarWidget>
-#include <QBoxLayout>
-
 #include "event/dialog/CalendarTaskListener.hpp"
 
-class CalendarTaskListener;
+static constexpr const char* const TAG = "[CalendarTaskListener] ";
 
-class CalendarDialog : public QDialog {
-    Q_OBJECT
-public:
-    explicit CalendarDialog(const QString& title);
-    ~CalendarDialog();
+CalendarTaskListener::CalendarTaskListener(CalendarDialog* dialog)
+    : mDialog(dialog) {
+    Q_ASSERT(mDialog);
+}
 
-    QCalendarWidget* getCalendar() const;
+CalendarTaskListener::~CalendarTaskListener() {}
 
-private:
-    void initUI();
+void CalendarTaskListener::selectDate() {
+    const QString format = "dd-MM-yyyy_hh:mm:ss";
 
-    CalendarTaskListener* mListener;
+    const QString selectDate = mDialog->getCalendar()->selectedDate().toString(format);
+    [[maybe_unused]] const QDateTime selectDateTime = QDateTime::fromString(selectDate, format);
 
-    QBoxLayout* mLayout;
-    QCalendarWidget* mCalendar;
-};
+    /*
+    mDialog->getTimestampEdit()->setDateTime(selectDateTime);
+    */
+    mDialog->close();
+}

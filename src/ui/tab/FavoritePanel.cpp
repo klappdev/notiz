@@ -34,7 +34,7 @@ static constexpr const char* const TAG =  "[FavoritePanel] ";
 FavoritePanel::FavoritePanel(QWidget *parent)
     : QGroupBox(parent)
     , mModel(new TaskModel)
-    , mListener(new FavoriteEvent(this)) {
+    , mListener(new FavoriteListener(this)) {
     setObjectName("favorite-panel");
 
     mLayout = new QVBoxLayout;
@@ -116,6 +116,6 @@ QTableView* FavoritePanel::getTable() const {
     return mTable;
 }
 
-FavoriteEvent* FavoritePanel::getEvent() const {
+FavoriteListener* FavoritePanel::getListener() const {
     return mListener;
 }

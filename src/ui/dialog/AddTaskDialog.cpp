@@ -25,7 +25,7 @@
 #include "ui/dialog/AddTaskDialog.hpp"
 
 AddTaskDialog::AddTaskDialog(const QString & title)
-    : mListener(new AddTaskEvent(this))
+    : mListener(new AddTaskListener(this))
     , mPanel(nullptr) {
     setWindowTitle(title);
     setObjectName("add-task-dialog");

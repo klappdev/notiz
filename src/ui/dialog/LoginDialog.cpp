@@ -30,7 +30,7 @@
 
 LoginDialog::LoginDialog(QWidget* parent)
     : QDialog(parent)
-    , mListener(new LoginEvent(this)) {
+    , mListener(new LoginAccountListener(this)) {
     setWindowTitle(tr("Login account"));
     setObjectName("login-window");
 
@@ -132,6 +132,6 @@ QLineEdit* LoginDialog::getPasswordEdit() {
     return mPasswordEdit;
 }
 
-LoginEvent* LoginDialog::getEvent() const {
+LoginAccountListener* LoginDialog::getListener() const {
     return mListener;
 }

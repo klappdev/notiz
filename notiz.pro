@@ -27,17 +27,17 @@ HEADERS  += include/ui/main/MainWindow.hpp          \
         include/ui/dialog/AddTaskDialog.hpp         \
         include/ui/dialog/EditTaskDialog.hpp        \
                                                     \
-        include/event/dialog/AddTaskEvent.hpp       \
-        include/event/dialog/LoginEvent.hpp         \
-        include/event/dialog/EditTaskEvent.hpp      \
-        include/event/dialog/CalendarTaskEvent.hpp  \
-                                                    \
-        include/event/tab/SettingsEvent.hpp         \
-        include/event/tab/CalendarEvent.hpp         \
-        include/event/tab/StartEvent.hpp            \
-        include/event/tab/FavoriteEvent.hpp         \
-        include/event/tab/CompleteEvent.hpp         \
-        include/event/ControlEvent.hpp              \
+        include/event/dialog/AddTaskListener.hpp      \
+        include/event/dialog/LoginAccountListener.hpp \
+        include/event/dialog/EditTaskListener.hpp     \
+        include/event/dialog/CalendarTaskListener.hpp \
+                                                      \
+        include/event/tab/SettingsListener.hpp        \
+        include/event/tab/CalendarListener.hpp        \
+        include/event/tab/StartListener.hpp           \
+        include/event/tab/FavoriteListener.hpp        \
+        include/event/tab/CompleteListener.hpp        \
+        include/event/ControlListener.hpp             \
                                                     \
         include/model/TaskModel.hpp                 \
                                                     \
@@ -70,17 +70,17 @@ SOURCES += main.cpp                             \
         src/ui/dialog/EditTaskDialog.cpp        \
         src/ui/dialog/AboutAppDialog.cpp        \
                                                 \
-        src/event/dialog/AddTaskEvent.cpp       \
-        src/event/dialog/EditTaskEvent.cpp      \
-        src/event/dialog/LoginEvent.cpp         \
-        src/event/dialog/CalendarTaskEvent.cpp  \
-                                                \
-        src/event/tab/CalendarEvent.cpp         \
-        src/event/tab/StartEvent.cpp            \
-        src/event/tab/FavoriteEvent.cpp         \
-        src/event/tab/CompleteEvent.cpp         \
-        src/event/tab/SettingsEvent.cpp         \
-        src/event/ControlEvent.cpp              \
+        src/event/dialog/AddTaskListener.cpp      \
+        src/event/dialog/EditTaskListener.cpp     \
+        src/event/dialog/LoginAccountListener.cpp \
+        src/event/dialog/CalendarTaskListener.cpp \
+                                                  \
+        src/event/tab/CalendarListener.cpp        \
+        src/event/tab/StartListener.cpp           \
+        src/event/tab/FavoriteListener.cpp        \
+        src/event/tab/CompleteListener.cpp        \
+        src/event/tab/SettingsListener.cpp        \
+        src/event/ControlListener.cpp             \
                                                 \
         src/model/TaskModel.cpp                 \
                                                 \

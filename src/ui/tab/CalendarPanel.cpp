@@ -32,7 +32,7 @@ static constexpr const char* const TAG =  "[CalendarPanel] ";
 
 CalendarPanel::CalendarPanel(QWidget* parent)
     : QGroupBox(parent)
-    , mListener(new CalendarEvent(this)) {
+    , mListener(new CalendarListener(this)) {
     setObjectName("calendar-panel");
 
     mLayout = new QVBoxLayout;
@@ -89,7 +89,7 @@ void CalendarPanel::initButtons() {
     mLayout->setSpacing(10);
 }
 
-CalendarEvent* CalendarPanel::getEvent() const {
+CalendarListener* CalendarPanel::getListener() const {
     return mListener;
 }
 

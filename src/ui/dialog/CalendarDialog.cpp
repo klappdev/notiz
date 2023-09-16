@@ -28,7 +28,7 @@
 
 CalendarDialog::CalendarDialog(const QString& title)
     : QDialog()
-    , mListener(new CalendarTaskEvent(this)) {
+    , mListener(new CalendarTaskListener(this)) {
     setWindowTitle(title);
     setObjectName("calendar-dialog");
 

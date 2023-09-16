@@ -21,35 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE  OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 #pragma once
 
-#include <QGroupBox>
+#include "ui/dialog/EditTaskDialog.hpp"
 
-#include <QPushButton>
+class EditTaskDialog;
 
-#include <QBoxLayout>
-
-#include "ui/widget/TaskCalendar.hpp"
-#include "event/tab/CalendarListener.hpp"
-
-class CalendarListener;
-
-class CalendarPanel final : public QGroupBox {
+class EditTaskListener final : public QObject {
+    Q_OBJECT
 public:
-    explicit CalendarPanel(QWidget* parent = nullptr);
-    ~CalendarPanel();
+    explicit EditTaskListener(EditTaskDialog* dialog = nullptr);
+    ~EditTaskListener();
 
-    CalendarListener* getListener() const;
-    TaskCalendar* getCalendar() const;
+public slots:
+    void confirm();
+    void cancel();
+
+    void selectDate();
 
 private:
-    void initCalendar();
-    void initButtons();
-
-    CalendarListener* mListener;
-
-    QBoxLayout* mLayout;
-    TaskCalendar* mCalendar;
-
-    QPushButton* mUpdateButton;
+    EditTaskDialog* mDialog;
 };

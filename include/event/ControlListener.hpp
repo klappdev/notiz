@@ -24,27 +24,23 @@
 
 #pragma once
 
-#include <QDialog>
-#include <QCalendarWidget>
-#include <QBoxLayout>
+#include "ui/main/MainWindow.hpp"
 
-#include "event/dialog/CalendarTaskListener.hpp"
+class MainWindow;
 
-class CalendarTaskListener;
-
-class CalendarDialog : public QDialog {
+class ControlListener final: public QObject {
     Q_OBJECT
 public:
-    explicit CalendarDialog(const QString& title);
-    ~CalendarDialog();
+    explicit ControlListener(QWidget* parent = nullptr);
+    ~ControlListener();
 
-    QCalendarWidget* getCalendar() const;
+    void hideWindow(QCloseEvent* event);
+
+public slots:
+    void notifyTasks();
+
+    void exit();
 
 private:
-    void initUI();
-
-    CalendarTaskListener* mListener;
-
-    QBoxLayout* mLayout;
-    QCalendarWidget* mCalendar;
+    MainWindow* mMainWindow;
 };

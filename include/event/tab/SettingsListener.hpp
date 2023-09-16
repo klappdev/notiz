@@ -21,35 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE  OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 #pragma once
 
-#include <QGroupBox>
+#include "ui/tab/SettingsPanel.hpp"
 
-#include <QPushButton>
+class SettingsPanel;
 
-#include <QBoxLayout>
-
-#include "ui/widget/TaskCalendar.hpp"
-#include "event/tab/CalendarListener.hpp"
-
-class CalendarListener;
-
-class CalendarPanel final : public QGroupBox {
+class SettingsListener final : public QObject {
+    Q_OBJECT
 public:
-    explicit CalendarPanel(QWidget* parent = nullptr);
-    ~CalendarPanel();
+    explicit SettingsListener(SettingsPanel* parent = nullptr);
+    ~SettingsListener();
 
-    CalendarListener* getListener() const;
-    TaskCalendar* getCalendar() const;
+public slots:
+    void storeConfiguration();
+    void loadConfiguration(int index);
+
+    void showResetData();
+    void showAboutApp();
+
+    void chooseLightTheme(bool checked);
+    void chooseDarkTheme(bool checked);
+
+    void chooseEnLanguage(bool checked);
+    void chooseDeLanguage(bool checked);
+
+    void turnOnNotification(bool checked);
+    void turnOffNotification(bool checked);
 
 private:
-    void initCalendar();
-    void initButtons();
-
-    CalendarListener* mListener;
-
-    QBoxLayout* mLayout;
-    TaskCalendar* mCalendar;
-
-    QPushButton* mUpdateButton;
+    SettingsPanel* mParent;
 };

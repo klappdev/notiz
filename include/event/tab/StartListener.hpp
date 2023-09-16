@@ -24,27 +24,34 @@
 
 #pragma once
 
-#include <QDialog>
-#include <QCalendarWidget>
-#include <QBoxLayout>
+#include "ui/tab/StartPanel.hpp"
 
-#include "event/dialog/CalendarTaskListener.hpp"
+class StartPanel;
 
-class CalendarTaskListener;
-
-class CalendarDialog : public QDialog {
+class StartListener final : public QObject {
     Q_OBJECT
 public:
-    explicit CalendarDialog(const QString& title);
-    ~CalendarDialog();
+    explicit StartListener(StartPanel* panel = nullptr);
+    ~StartListener();
 
-    QCalendarWidget* getCalendar() const;
+public slots:
+    void showTask(const QPoint& position);
+    void showAddTask();
+    void showEditTask();
+
+    void showDeleteTask();
+    void showSimilarTask();
+    void showSearchTask();
+
+    void sortAscTask(bool checked);
+    void sortDescTask(bool checked);
+
+    void searchTodayTask(bool checked);
+    void sortCalendarTask(bool checked);
+
+    void changeFavoriteTask();
+    void changeCompleteTask();
 
 private:
-    void initUI();
-
-    CalendarTaskListener* mListener;
-
-    QBoxLayout* mLayout;
-    QCalendarWidget* mCalendar;
+    StartPanel* mPanel;
 };

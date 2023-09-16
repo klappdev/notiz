@@ -21,35 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE  OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#pragma once
 
-#include <QGroupBox>
+#include "event/tab/CompleteListener.hpp"
 
-#include <QPushButton>
+static constexpr const char* const TAG = "[CompleteListener] ";
 
-#include <QBoxLayout>
+CompleteListener::CompleteListener(CompletePanel* panel)
+    : mPanel(panel) {
+}
 
-#include "ui/widget/TaskCalendar.hpp"
-#include "event/tab/CalendarListener.hpp"
+CompleteListener::~CompleteListener() {}
 
-class CalendarListener;
+void CompleteListener::showUpdateTask() {
+    mPanel->updateTable();
+}
 
-class CalendarPanel final : public QGroupBox {
-public:
-    explicit CalendarPanel(QWidget* parent = nullptr);
-    ~CalendarPanel();
+void CompleteListener::updateTasks(int index) {
+    Q_UNUSED(index);
 
-    CalendarListener* getListener() const;
-    TaskCalendar* getCalendar() const;
-
-private:
-    void initCalendar();
-    void initButtons();
-
-    CalendarListener* mListener;
-
-    QBoxLayout* mLayout;
-    TaskCalendar* mCalendar;
-
-    QPushButton* mUpdateButton;
-};
+    mPanel->updateTable();
+}

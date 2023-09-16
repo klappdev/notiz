@@ -21,35 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE  OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#pragma once
 
-#include <QGroupBox>
+#include "event/tab/FavoriteListener.hpp"
 
-#include <QPushButton>
+static constexpr const char* const TAG = "[FavoriteListener] ";
 
-#include <QBoxLayout>
+FavoriteListener::FavoriteListener(FavoritePanel* panel)
+    : mPanel(panel) {
+}
 
-#include "ui/widget/TaskCalendar.hpp"
-#include "event/tab/CalendarListener.hpp"
+FavoriteListener::~FavoriteListener() {}
 
-class CalendarListener;
+void FavoriteListener::showUpdateTask() {
+    mPanel->updateTable();
+}
 
-class CalendarPanel final : public QGroupBox {
-public:
-    explicit CalendarPanel(QWidget* parent = nullptr);
-    ~CalendarPanel();
+void FavoriteListener::updateTasks(int index) {
+    Q_UNUSED(index);
 
-    CalendarListener* getListener() const;
-    TaskCalendar* getCalendar() const;
-
-private:
-    void initCalendar();
-    void initButtons();
-
-    CalendarListener* mListener;
-
-    QBoxLayout* mLayout;
-    TaskCalendar* mCalendar;
-
-    QPushButton* mUpdateButton;
-};
+    mPanel->updateTable();
+}

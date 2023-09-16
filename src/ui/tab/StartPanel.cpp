@@ -34,7 +34,7 @@ static constexpr const char* const TAG =  "[StartPanel] ";
 StartPanel::StartPanel(QWidget* parent)
     : QGroupBox(parent)
     , mModel(new TaskModel)
-    , mListener(new StartEvent(this)) {
+    , mListener(new StartListener(this)) {
     setObjectName("start-panel");
 
     mLayout = new QVBoxLayout;

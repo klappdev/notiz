@@ -39,7 +39,7 @@ static constexpr const char* const TAG =  "[MainWindow] ";
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , mTimer(new QTimer())
-    , mListener(new ControlEvent(this)) {
+    , mListener(new ControlListener(this)) {
     setObjectName("main-window");
     setWindowTitle(tr("Notice"));
 
@@ -124,10 +124,10 @@ void MainWindow::initFavoritePage(PageTab tab) {
     QWidget* favoritePage = mTabs->widget(static_cast<int>(tab));
 
     auto* favoritePanel = new FavoritePanel;
-    FavoriteEvent* event = favoritePanel->getEvent();
+    FavoriteListener* listener = favoritePanel->getListener();
 
     QObject::connect(mTabs,  SIGNAL(tabBarClicked(int)),
-                     event, SLOT(updateTasks(int)));
+                     listener, SLOT(updateTasks(int)));
 
     QBoxLayout* verticalBox = new QVBoxLayout;
     verticalBox->setMargin(5);
@@ -141,10 +141,10 @@ void MainWindow::initCompletePage(PageTab tab) {
     QWidget* completePage = mTabs->widget(static_cast<int>(tab));
 
     auto* completePanel = new CompletePanel;
-    CompleteEvent* event = completePanel->getEvent();
+    CompleteListener* listener = completePanel->getListener();
 
     QObject::connect(mTabs,  SIGNAL(tabBarClicked(int)),
-                     event, SLOT(updateTasks(int)));
+                     listener, SLOT(updateTasks(int)));
 
     QBoxLayout* verticalBox = new QVBoxLayout;
     verticalBox->setMargin(5);
@@ -158,10 +158,10 @@ void MainWindow::initCalendarPage(PageTab tab) {
     QWidget* calendarPage = mTabs->widget(static_cast<int>(tab));
 
     auto* calendarPanel = new CalendarPanel;
-    CalendarEvent* event = calendarPanel->getEvent();
+    CalendarListener* listener = calendarPanel->getListener();
 
     connect(mTabs,  SIGNAL(tabBarClicked(int)),
-            event, SLOT(updateCalendar(int)));
+            listener, SLOT(updateCalendar(int)));
 
     QBoxLayout* verticalBox = new QVBoxLayout;
     verticalBox->setMargin(5);
@@ -175,10 +175,10 @@ void MainWindow::initSettingsPage(PageTab tab) {
     QWidget* settingsPage = mTabs->widget(static_cast<int>(tab));
 
     auto* settingsPanel = new SettingsPanel;
-    SettingsEvent* event = settingsPanel->getEvent();
+    SettingsListener* listener = settingsPanel->getListener();
 
     connect(mTabs,  SIGNAL(tabBarClicked(int)),
-            event, SLOT(loadConfiguration(int)));
+            listener, SLOT(loadConfiguration(int)));
 
     QBoxLayout* verticalBox = new QVBoxLayout;
     verticalBox->setMargin(5);

@@ -22,29 +22,45 @@
  * SOFTWARE.
  */
 
-#pragma once
+#include "event/dialog/LoginAccountListener.hpp"
+#include "db/AccountDao.hpp"
 
-#include <QDialog>
-#include <QCalendarWidget>
-#include <QBoxLayout>
+#include "ui/util/UiUtil.hpp"
 
-#include "event/dialog/CalendarTaskListener.hpp"
+static constexpr const char* const TAG = "[LoginAccountListener] ";
 
-class CalendarTaskListener;
+LoginAccountListener::LoginAccountListener(LoginDialog* parent)
+    : mLoginDialog(parent) {
+    Q_ASSERT(mLoginDialog);
+}
 
-class CalendarDialog : public QDialog {
-    Q_OBJECT
-public:
-    explicit CalendarDialog(const QString& title);
-    ~CalendarDialog();
+LoginAccountListener::~LoginAccountListener() {}
 
-    QCalendarWidget* getCalendar() const;
+void LoginAccountListener::successLoad() {
+    const QString login = mLoginDialog->getUserName();
+    const QString password = mLoginDialog->getPassword();
 
-private:
-    void initUI();
+    mMainWindow = static_cast<MainWindow*>(UiUtil::getMainWindow());
+    Q_CHECK_PTR(mMainWindow);
 
-    CalendarTaskListener* mListener;
+    if (AccountDao::getInstance().checkIfExists(login, password)) {
+        mLoginDialog->hide();
 
-    QBoxLayout* mLayout;
-    QCalendarWidget* mCalendar;
-};
+        mMainWindow->show();
+    } else {
+        mLoginDialog->setUserName("");
+        mLoginDialog->setPassword("");
+
+        UiUtil::showErrorMessage(tr("Enter user in application"),
+                                 tr("Login and password was input incorrect!"));
+    }
+}
+
+void LoginAccountListener::changeMode(bool changed) {
+    if (changed) {
+        mLoginDialog->getPasswordEdit()->setEchoMode(QLineEdit::Password);
+    } else {
+        mLoginDialog->getPasswordEdit()->setEchoMode(QLineEdit::Normal);
+    }
+}
+

@@ -32,9 +32,9 @@
 #include "ui/tab/StartPanel.hpp"
 #include "ui/main/PageTab.hpp"
 
-#include "event/ControlEvent.hpp"
+#include "event/ControlListener.hpp"
 
-class ControlEvent;
+class ControlListener;
 
 class MainWindow final : public QMainWindow {
     Q_OBJECT
@@ -71,5 +71,5 @@ private:
     QWidget* mMainWidget;
 
     QTabWidget* mTabs;
-    ControlEvent* mListener;
+    ControlListener* mListener;
 };

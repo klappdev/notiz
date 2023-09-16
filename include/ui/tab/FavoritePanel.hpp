@@ -30,11 +30,11 @@
 #include <QGroupBox>
 #include <QPushButton>
 
-#include "event/tab/FavoriteEvent.hpp"
+#include "event/tab/FavoriteListener.hpp"
 
 #include "model/TaskModel.hpp"
 
-class FavoriteEvent;
+class FavoriteListener;
 
 class FavoritePanel final : public QGroupBox {
 public:
@@ -42,7 +42,7 @@ public:
     ~FavoritePanel();
 
     QTableView* getTable() const;
-    FavoriteEvent* getEvent() const;
+    FavoriteListener* getListener() const;
 
     void setupModel();
     void updateTable();
@@ -56,7 +56,7 @@ private:
     void setupHeaderTable();
 
     TaskModel* mModel;
-    FavoriteEvent* mListener;
+    FavoriteListener* mListener;
 
     QBoxLayout* mLayout;
     QTableView* mTable;

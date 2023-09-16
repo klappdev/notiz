@@ -22,29 +22,46 @@
  * SOFTWARE.
  */
 
-#pragma once
+#include "event/ControlListener.hpp"
+#include "setting/AppSettings.hpp"
 
-#include <QDialog>
-#include <QCalendarWidget>
-#include <QBoxLayout>
+#include "ui/util/UiUtil.hpp"
+#include "ui/dialog/LoginDialog.hpp"
 
-#include "event/dialog/CalendarTaskListener.hpp"
+#include <QApplication>
+#include <QDateTime>
 
-class CalendarTaskListener;
+static constexpr const char* const TAG = "[ControlListener] ";
 
-class CalendarDialog : public QDialog {
-    Q_OBJECT
-public:
-    explicit CalendarDialog(const QString& title);
-    ~CalendarDialog();
+ControlListener::ControlListener(QWidget* parent)
+    : mMainWindow((MainWindow*) parent) {
+}
 
-    QCalendarWidget* getCalendar() const;
+ControlListener::~ControlListener() {}
 
-private:
-    void initUI();
+void ControlListener::notifyTasks() {
+    const QString format = "dd-MM-yyyy_hh:mm";
+    const QList<Task>& tasks = mMainWindow->getStartPanel()->getModel()->getTasks();
 
-    CalendarTaskListener* mListener;
+    for (const Task& task : tasks) {
+        /* without seconds */
+        const QString currentDateTime = QDateTime::currentDateTime().toString(format);
+        const QString taskDateTime = task.timestamp.left(task.timestamp.lastIndexOf(':'));
 
-    QBoxLayout* mLayout;
-    QCalendarWidget* mCalendar;
-};
+        if (currentDateTime == taskDateTime) {
+            UiUtil::showInfoMessage(tr("Notify task"),
+                                    tr("Start notify task: %1\n").arg(task.name));
+        }
+    }
+}
+
+void ControlListener::exit() {
+    auto* loginDialog = static_cast<LoginDialog*>(UiUtil::getLoginWindow());
+    Q_CHECK_PTR(loginDialog);
+    AppSettings::getInstance().store();
+
+    loginDialog->reject();
+    qApp->quit();
+}
+
+

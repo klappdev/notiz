@@ -31,9 +31,9 @@
 #include <QPushButton>
 #include <QLabel>
 
-#include "event/tab/SettingsEvent.hpp"
+#include "event/tab/SettingsListener.hpp"
 
-class SettingsEvent;
+class SettingsListener;
 
 class SettingsPanel final: public QGroupBox {
     Q_OBJECT
@@ -56,7 +56,7 @@ public:
     QLabel* getResetLabel() const;
     QLabel* getAboutLabel() const;
 
-    SettingsEvent* getEvent() const;
+    SettingsListener* getListener() const;
 
 private:
     void initThemeRegion();
@@ -66,7 +66,7 @@ private:
     void initAboutRegion();
     void initControlRegion();
 
-    SettingsEvent* mListener;
+    SettingsListener* mListener;
 
     QBoxLayout* mLayout;
 

@@ -28,7 +28,7 @@ static constexpr const char* const TAG =  "[SettingsPanel] ";
 
 SettingsPanel::SettingsPanel(QWidget* parent)
     : QGroupBox(parent)
-    , mListener(new SettingsEvent(this)) {
+    , mListener(new SettingsListener(this)) {
     setObjectName("settings-panel");
 
     mLayout = new QVBoxLayout;
@@ -255,6 +255,6 @@ QLabel* SettingsPanel::getAboutLabel() const {
     return mAboutLabel;
 }
 
-SettingsEvent* SettingsPanel::getEvent() const {
+SettingsListener* SettingsPanel::getListener() const {
     return mListener;
 }

@@ -31,11 +31,11 @@
 #include <QPushButton>
 #include <QBoxLayout>
 
-#include "event/tab/CompleteEvent.hpp"
+#include "event/tab/CompleteListener.hpp"
 
 #include "model/TaskModel.hpp"
 
-class CompleteEvent;
+class CompleteListener;
 
 class CompletePanel final: public QGroupBox {
 public:
@@ -43,7 +43,7 @@ public:
     ~CompletePanel();
 
     QTableView* getTable() const;
-    CompleteEvent* getEvent() const;
+    CompleteListener* getListener() const;
 
     void setupModel();
     void updateTable();
@@ -57,7 +57,7 @@ private:
     void setupHeaderTable();
 
     TaskModel* mModel;
-    CompleteEvent *mEvent;
+    CompleteListener *mListener;
 
     QBoxLayout* mLayout;
     QTableView* mTable;

@@ -34,7 +34,7 @@ static constexpr const char* const TAG = "CompletePanel ";
 CompletePanel::CompletePanel(QWidget* parent)
     : QGroupBox(parent)
     , mModel(new TaskModel)
-    , mEvent(new CompleteEvent(this)) {
+    , mListener(new CompleteListener(this)) {
     setObjectName("complete-panel");
 
     mLayout = new QVBoxLayout;
@@ -49,7 +49,7 @@ CompletePanel::CompletePanel(QWidget* parent)
 
 CompletePanel::~CompletePanel() {
     delete mModel;
-    delete mEvent;
+    delete mListener;
 }
 
 void CompletePanel::initTable() {
@@ -73,7 +73,7 @@ void CompletePanel::initButtons() {
     mUpdateButton->setObjectName("update-button");
 
     QObject::connect(mUpdateButton, SIGNAL(clicked()),
-                     mEvent,        SLOT(showUpdateTask()));
+                     mListener,     SLOT(showUpdateTask()));
 
     QBoxLayout* horizontalLayout = new QHBoxLayout;
     horizontalLayout->addStretch(1);
@@ -116,6 +116,6 @@ QTableView* CompletePanel::getTable() const {
     return mTable;
 }
 
-CompleteEvent* CompletePanel::getEvent() const {
-    return mEvent;
+CompleteListener* CompletePanel::getListener() const {
+    return mListener;
 }

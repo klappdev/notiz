@@ -28,7 +28,7 @@
 
 EditTaskDialog::EditTaskDialog(const QString& title)
     : QDialog()
-    , mListener(new EditTaskEvent(this))
+    , mListener(new EditTaskListener(this))
     , mPanel(nullptr) {
     setWindowTitle(title);
     setObjectName("edit-task-dialog");

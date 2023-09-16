@@ -24,27 +24,19 @@
 
 #pragma once
 
-#include <QDialog>
-#include <QCalendarWidget>
-#include <QBoxLayout>
+#include "ui/dialog/CalendarDialog.hpp"
 
-#include "event/dialog/CalendarTaskListener.hpp"
+class CalendarDialog;
 
-class CalendarTaskListener;
-
-class CalendarDialog : public QDialog {
+class CalendarTaskListener final: public QObject {
     Q_OBJECT
 public:
-    explicit CalendarDialog(const QString& title);
-    ~CalendarDialog();
+    explicit CalendarTaskListener(CalendarDialog* dialog = nullptr);
+    ~CalendarTaskListener();
 
-    QCalendarWidget* getCalendar() const;
+public slots:
+    void selectDate();
 
 private:
-    void initUI();
-
-    CalendarTaskListener* mListener;
-
-    QBoxLayout* mLayout;
-    QCalendarWidget* mCalendar;
+    CalendarDialog* mDialog;
 };

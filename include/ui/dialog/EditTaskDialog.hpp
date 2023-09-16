@@ -35,9 +35,9 @@
 #include <QPushButton>
 
 #include "ui/tab/StartPanel.hpp"
-#include "event/dialog/EditTaskEvent.hpp"
+#include "event/dialog/EditTaskListener.hpp"
 
-class EditTaskEvent;
+class EditTaskListener;
 class StartPanel;
 
 class EditTaskDialog final : public QDialog {
@@ -72,7 +72,7 @@ private:
 
     void initControlRegion();
 
-    EditTaskEvent* mListener;
+    EditTaskListener* mListener;
     StartPanel* mPanel;
 
     QBoxLayout* mVerticalBox;

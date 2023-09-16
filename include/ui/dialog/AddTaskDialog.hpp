@@ -37,9 +37,9 @@
 #include <QTextEdit>
 
 #include "ui/tab/StartPanel.hpp"
-#include "event/dialog/AddTaskEvent.hpp"
+#include "event/dialog/AddTaskListener.hpp"
 
-class AddTaskEvent;
+class AddTaskListener;
 class StartPanel;
 
 class AddTaskDialog final : public QDialog {
@@ -71,7 +71,7 @@ private:
 
     void initControlRegion();
 
-    AddTaskEvent* mListener;
+    AddTaskListener* mListener;
     StartPanel* mPanel;
 
     QBoxLayout* mVerticalBox;

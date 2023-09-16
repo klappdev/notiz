@@ -33,9 +33,9 @@
 #include <QDialogButtonBox>
 #include <QBoxLayout>
 
-#include "event/dialog/LoginEvent.hpp"
+#include "event/dialog/LoginAccountListener.hpp"
 
-class LoginEvent;
+class LoginAccountListener;
 
 class LoginDialog final : public QDialog {
     Q_OBJECT
@@ -43,7 +43,7 @@ public:
     explicit LoginDialog(QWidget* parent = nullptr);
     ~LoginDialog();
 
-    LoginEvent* getEvent() const;
+    LoginAccountListener* getListener() const;
 
     void setUserName(const QString& name);
     void setPassword(const QString& password);
@@ -72,5 +72,5 @@ private:
 
     QDialogButtonBox* mButtons;
 
-    LoginEvent* mListener;
+    LoginAccountListener* mListener;
 };
