@@ -32,10 +32,7 @@
 #include <QPushButton>
 #include <QToolButton>
 
-#include "event/tab/StartListener.hpp"
 #include "model/TaskModel.hpp"
-
-class StartListener;
 
 class StartPanel final: public QGroupBox {
     Q_OBJECT
@@ -43,23 +40,29 @@ public:
     explicit StartPanel(QWidget* parent = nullptr);
     ~StartPanel();
 
-    QLineEdit* getSearcheEdit() const;
-    QTableView* getTable() const;
-    QMenu* getMenu() const;
-
     TaskModel* getModel() const;
-
-    QAction* getSortAscAction() const;
-    QAction* getSortDescAction() const;
-    QAction* getSortDayAction() const;
-    QAction* getSortCalendarAction() const;
-
-    QAction* getFavoriteAction() const;
-    QAction* getCompleteAction() const;
 
     void setupModel();
     void updateTable();
     void updateTable(QList<Task>&& list);
+
+public slots:
+    void showTask(const QPoint& position);
+    void showAddTask();
+    void showEditTask();
+
+    void showDeleteTask();
+    void showSimilarTask();
+    void showSearchTask();
+
+    void sortAscTask(bool checked);
+    void sortDescTask(bool checked);
+
+    void searchTodayTask(bool checked);
+    void sortCalendarTask(bool checked);
+
+    void changeFavoriteTask();
+    void changeCompleteTask();
 
 private:
     void initNavigateRegion();
@@ -70,7 +73,6 @@ private:
     void createMenu();
 
     TaskModel* mModel;
-    StartListener* mListener;
 
     QBoxLayout* mLayout;
     QTableView* mTable;

@@ -33,12 +33,15 @@ static constexpr const char* const TAG = "CompletePanel ";
 
 CompletePanel::CompletePanel(QWidget* parent)
     : QGroupBox(parent)
-    , mModel(new TaskModel)
-    , mListener(new CompleteListener(this)) {
+    , mModel(new TaskModel) {
     setObjectName("complete-panel");
 
     mLayout = new QVBoxLayout;
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mLayout->setMargin(20);
+#else
+    mLayout->setContentsMargins(20, 20, 20, 20);
+#endif
     mLayout->setSpacing(20);
 
     initTable();
@@ -49,7 +52,6 @@ CompletePanel::CompletePanel(QWidget* parent)
 
 CompletePanel::~CompletePanel() {
     delete mModel;
-    delete mListener;
 }
 
 void CompletePanel::initTable() {
@@ -73,16 +75,24 @@ void CompletePanel::initButtons() {
     mUpdateButton->setObjectName("update-button");
 
     QObject::connect(mUpdateButton, SIGNAL(clicked()),
-                     mListener,     SLOT(showUpdateTask()));
+                     this, SLOT(showUpdateTask()));
 
     QBoxLayout* horizontalLayout = new QHBoxLayout;
     horizontalLayout->addStretch(1);
     horizontalLayout->addWidget(mUpdateButton);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     horizontalLayout->setMargin(5);
+#else
+    horizontalLayout->setContentsMargins(5, 5, 5, 5);
+#endif
     horizontalLayout->setSpacing(10);
 
     mLayout->addLayout(horizontalLayout);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mLayout->setMargin(10);
+#else
+    mLayout->setContentsMargins(5, 5, 5, 5);
+#endif
     mLayout->setSpacing(10);
 }
 
@@ -105,17 +115,18 @@ void CompletePanel::setupModel() {
     mTable->setModel(mModel);
 }
 
-//FIXME: move to Listener
 void CompletePanel::updateTable() {
     QList<Task> list = TaskDao::getInstance().getAllComplete();
 
     mModel->setTasks(std::move(list));
 }
 
-QTableView* CompletePanel::getTable() const {
-    return mTable;
+void CompletePanel::showUpdateTask() {
+    updateTable();
 }
 
-CompleteListener* CompletePanel::getListener() const {
-    return mListener;
+void CompletePanel::updateTasks(int index) {
+    Q_UNUSED(index);
+
+    updateTable();
 }

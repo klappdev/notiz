@@ -32,10 +32,6 @@
 #include "ui/tab/StartPanel.hpp"
 #include "ui/main/PageTab.hpp"
 
-#include "event/ControlListener.hpp"
-
-class ControlListener;
-
 class MainWindow final : public QMainWindow {
     Q_OBJECT
 public:
@@ -49,10 +45,15 @@ public:
 
     QTabWidget* getTabs() const;
 
-private:
+public slots:
+    void notifyTasks();
+    void exit();
+
+protected:
     void showEvent(QShowEvent* event) override;
     void closeEvent(QCloseEvent* event) override;
 
+private:
     void initTabs();
     void initTimer();
 
@@ -71,5 +72,4 @@ private:
     QWidget* mMainWidget;
 
     QTabWidget* mTabs;
-    ControlListener* mListener;
 };

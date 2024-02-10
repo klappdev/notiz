@@ -30,7 +30,6 @@
 #include <QBoxLayout>
 
 #include "ui/widget/TaskCalendar.hpp"
-#include "event/tab/CalendarListener.hpp"
 
 class CalendarListener;
 
@@ -39,14 +38,13 @@ public:
     explicit CalendarPanel(QWidget* parent = nullptr);
     ~CalendarPanel();
 
-    CalendarListener* getListener() const;
-    TaskCalendar* getCalendar() const;
+public slots:
+    void showUpdateCalendar();
+    void updateCalendar(int index);
 
 private:
     void initCalendar();
     void initButtons();
-
-    CalendarListener* mListener;
 
     QBoxLayout* mLayout;
     TaskCalendar* mCalendar;

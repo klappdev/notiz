@@ -37,9 +37,7 @@
 #include <QTextEdit>
 
 #include "ui/tab/StartPanel.hpp"
-#include "event/dialog/AddTaskListener.hpp"
 
-class AddTaskListener;
 class StartPanel;
 
 class AddTaskDialog final : public QDialog {
@@ -48,18 +46,10 @@ public:
     explicit AddTaskDialog(const QString& title);
     ~AddTaskDialog();
 
-    QCheckBox* getCompleteCheckBox() const;
-    QCheckBox* getFavoriteCheckBox() const;
-
-    QDateTimeEdit* getTimestampEdit() const;
-    QLineEdit* getNameEdit() const;
-    QTextEdit* getDescriptionEdit() const;
-
-    QPushButton* getConfirmButton() const;
-    QPushButton* getCancelButton() const;
-
-    StartPanel* getParent() const;
-    void setParent(StartPanel* panel);
+public slots:
+    void confirm();
+    void cancel();
+    void selectDate();
 
 private:
     void initUI();
@@ -71,7 +61,6 @@ private:
 
     void initControlRegion();
 
-    AddTaskListener* mListener;
     StartPanel* mPanel;
 
     QBoxLayout* mVerticalBox;

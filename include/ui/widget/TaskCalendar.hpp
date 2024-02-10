@@ -39,7 +39,7 @@ public:
     void setListTask(QList<Task>&& tasks);
 
 protected:
-    void paintCell(QPainter* painter, const QRect& rect, const QDate& date) const override;
+    void paintCell(QPainter* painter, const QRect& rect, QDate date) const override;
 
     void changeEvent(QEvent* event) override;
 

@@ -28,22 +28,17 @@
 #include <QCalendarWidget>
 #include <QBoxLayout>
 
-#include "event/dialog/CalendarTaskListener.hpp"
-
-class CalendarTaskListener;
-
 class CalendarDialog : public QDialog {
     Q_OBJECT
 public:
     explicit CalendarDialog(const QString& title);
     ~CalendarDialog();
 
-    QCalendarWidget* getCalendar() const;
+public slots:
+    void selectDate();
 
 private:
     void initUI();
-
-    CalendarTaskListener* mListener;
 
     QBoxLayout* mLayout;
     QCalendarWidget* mCalendar;

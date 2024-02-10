@@ -31,32 +31,27 @@
 #include <QPushButton>
 #include <QLabel>
 
-#include "event/tab/SettingsListener.hpp"
-
-class SettingsListener;
-
 class SettingsPanel final: public QGroupBox {
     Q_OBJECT
 public:
     explicit SettingsPanel(QWidget* parent = nullptr);
     ~SettingsPanel();
 
-    QCheckBox* getLightThemeCheckBox() const;
-    QCheckBox* getDarkThemeCheckBox() const;
+public slots:
+    void storeConfiguration();
+    void loadConfiguration(int index);
 
-    QCheckBox* getEnLanguageCheckBox() const;
-    QCheckBox* getDeLanguageCheckBox() const;
+    void showResetData();
+    void showAboutApp();
 
-    QCheckBox* getTurnOnCheckBox() const;
-    QCheckBox* getTurnOffCheckBox() const;
+    void chooseLightTheme(bool checked);
+    void chooseDarkTheme(bool checked);
 
-    QLabel* getThemeLabel() const;
-    QLabel* getLanguageLabel() const;
-    QLabel* getNotificationLabel() const;
-    QLabel* getResetLabel() const;
-    QLabel* getAboutLabel() const;
+    void chooseEnLanguage(bool checked);
+    void chooseDeLanguage(bool checked);
 
-    SettingsListener* getListener() const;
+    void turnOnNotification(bool checked);
+    void turnOffNotification(bool checked);
 
 private:
     void initThemeRegion();
@@ -65,8 +60,6 @@ private:
     void initResetRegion();
     void initAboutRegion();
     void initControlRegion();
-
-    SettingsListener* mListener;
 
     QBoxLayout* mLayout;
 

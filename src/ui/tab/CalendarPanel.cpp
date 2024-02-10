@@ -31,12 +31,15 @@
 static constexpr const char* const TAG =  "[CalendarPanel] ";
 
 CalendarPanel::CalendarPanel(QWidget* parent)
-    : QGroupBox(parent)
-    , mListener(new CalendarListener(this)) {
+    : QGroupBox(parent) {
     setObjectName("calendar-panel");
 
     mLayout = new QVBoxLayout;
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mLayout->setMargin(20);
+#else
+    mLayout->setContentsMargins(20, 20, 20, 20);
+#endif
     mLayout->setSpacing(20);
 
     initCalendar();
@@ -46,7 +49,6 @@ CalendarPanel::CalendarPanel(QWidget* parent)
 }
 
 CalendarPanel::~CalendarPanel() {
-    delete mListener;
 }
 
 void CalendarPanel::initCalendar() {
@@ -67,7 +69,11 @@ void CalendarPanel::initCalendar() {
     mCalendar->setListTask(TaskDao::getInstance().getAll());
 
     mLayout->addWidget(mCalendar);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mLayout->setMargin(10);
+#else
+    mLayout->setContentsMargins(10, 10, 10, 10);
+#endif
     mLayout->setSpacing(10);
 }
 
@@ -76,25 +82,37 @@ void CalendarPanel::initButtons() {
     this->mUpdateButton->setObjectName("update-button");
 
     QObject::connect(mUpdateButton, SIGNAL(clicked()),
-                     mListener,     SLOT(showUpdateCalendar()));
+                     this, SLOT(showUpdateCalendar()));
 
     QBoxLayout* horizontalLayout = new QHBoxLayout;
     horizontalLayout->addStretch(1);
     horizontalLayout->addWidget(mUpdateButton);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     horizontalLayout->setMargin(5);
+#else
+    mLayout->setContentsMargins(5, 5, 5, 5);
+#endif
     horizontalLayout->setSpacing(10);
 
     mLayout->addLayout(horizontalLayout);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mLayout->setMargin(10);
+#else
+    mLayout->setContentsMargins(10, 10, 10, 10);
+#endif
     mLayout->setSpacing(10);
 }
 
-CalendarListener* CalendarPanel::getListener() const {
-    return mListener;
+void CalendarPanel::showUpdateCalendar() {
+    const QList<Task> tasks = TaskDao::getInstance().getAll();
+
+    mCalendar->setListTask(tasks);
 }
 
-TaskCalendar* CalendarPanel::getCalendar() const {
-    return mCalendar;
+void CalendarPanel::updateCalendar(int index) {
+    Q_UNUSED(index);
+
+    const QList<Task> tasks = TaskDao::getInstance().getAll();
+
+    mCalendar->setListTask(tasks);
 }
-
-

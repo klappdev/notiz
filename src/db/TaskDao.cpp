@@ -54,9 +54,9 @@ auto TaskDao::createConnection() -> QSqlDatabase {
     database.setDatabaseName(databaseFile.absolutePath());
 
     if (!database.open()) {
-        qCritical() << TAG << "Can't open db: " << database.lastError() << endl;
+        qCritical() << TAG << "Can't open db: " << database.lastError() << '\n';
     } else {
-        qInfo() << TAG << "DB connected!" << endl;
+        qInfo() << TAG << "DB connected!" << '\n';
     }
 
     database.exec("PRAGMA locking_mode = EXCLUSIVE");
@@ -74,9 +74,9 @@ void TaskDao::createTable() {
                                  name VARCHAR(255),
                                  description VARCHAR(255));
                         )xxx")) {
-        qCritical() << TAG << "Table task was not created!" << mDatabase.lastError() << endl;
+        qCritical() << TAG << "Table task was not created!" << mDatabase.lastError() << '\n';
     } else {
-        qInfo() << TAG << "Table task was created!" << endl;
+        qInfo() << TAG << "Table task was created!" << '\n';
     }
 
     mSqlQuery.executedQuery();
@@ -217,7 +217,7 @@ auto TaskDao::getAll() -> QList<Task> {
     Task task = {};
 
     if (!mSqlQuery.exec("SELECT * FROM task;")) {
-       qCritical() << TAG << "select all task error:  " << mSqlQuery.lastError() << endl;
+       qCritical() << TAG << "select all task error:  " << mSqlQuery.lastError() << '\n';
     }
 
     mSqlRecord = mSqlQuery.record();
@@ -238,7 +238,7 @@ auto TaskDao::getAccountAll(qint32 idAccount) -> QList<Task> {
     mSqlQuery.addBindValue(idAccount);
 
     if (!mSqlQuery.exec()) {
-       qCritical() << "get account tasks error:  " << mSqlQuery.lastError() << endl;
+       qCritical() << "get account tasks error:  " << mSqlQuery.lastError() << '\n';
     }
 
     mSqlRecord = mSqlQuery.record();
@@ -259,7 +259,7 @@ auto TaskDao::getAllFavorite() -> QList<Task> {
     mSqlQuery.addBindValue(1);
 
     if (!mSqlQuery.exec()) {
-       qCritical() << "select all task by favorited error:  " << mSqlQuery.lastError() << endl;
+       qCritical() << "select all task by favorited error:  " << mSqlQuery.lastError() << '\n';
     }
 
     mSqlRecord = mSqlQuery.record();
@@ -280,7 +280,7 @@ auto TaskDao::getAllComplete() -> QList<Task> {
     mSqlQuery.addBindValue(1);
 
     if (!mSqlQuery.exec()) {
-       qCritical() << "select all task by completed error:  " << mSqlQuery.lastError() << endl;
+       qCritical() << "select all task by completed error:  " << mSqlQuery.lastError() << '\n';
     }
 
     mSqlRecord = mSqlQuery.record();
@@ -301,7 +301,7 @@ auto TaskDao::search(const QString& description) -> QList<Task> {
     mSqlQuery.addBindValue("%" + description + "%");
 
     if (!mSqlQuery.exec()) {
-       qCritical() << "search tasks error:  " << mSqlQuery.lastError() << endl;
+       qCritical() << "search tasks error:  " << mSqlQuery.lastError() << '\n';
     }
 
     mSqlRecord = mSqlQuery.record();
@@ -322,7 +322,7 @@ auto TaskDao::search(const QDate& date) -> QList<Task> {
     mSqlQuery.addBindValue(date.toString("dd/MM/yyyy"));
 
     if (!mSqlQuery.exec()) {
-       qCritical() << "search by timestamp error:  " << mSqlQuery.lastError() << endl;
+       qCritical() << "search by timestamp error:  " << mSqlQuery.lastError() << '\n';
     }
 
     mSqlRecord = mSqlQuery.record();
@@ -342,7 +342,7 @@ auto TaskDao::sort(bool asc) -> QList<Task> {
     const QString ascending = asc ? "ASC" : "DESC";
 
     if (!mSqlQuery.exec("SELECT * FROM task ORDER BY name " + ascending + ";")) {
-       qCritical() << TAG << "sort tasks error:  " << mSqlQuery.lastError() << endl;
+       qCritical() << TAG << "sort tasks error:  " << mSqlQuery.lastError() << '\n';
     }
 
     mSqlRecord = mSqlQuery.record();

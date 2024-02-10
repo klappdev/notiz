@@ -38,7 +38,7 @@ static void loadStyle(QApplication& application) {
     const bool flag = file.open(QFile::ReadOnly);
 
     if (!flag) {
-        qCritical() << "Can not load qss file!" << endl;
+        qCritical() << "Can not load qss file!" << '\n';
     }
 
     const QString styleSheetLines = QLatin1String(file.readAll());
@@ -51,7 +51,7 @@ static void loadStyle(QApplication& application) {
 static void loadLanguage() {
     const QString& language = AppSettings::getInstance().getLanguage();
 
-    qCritical() << "Language: " << language << endl;
+    qCritical() << "Language: " << language << '\n';
 
     auto& translator = AppTranslator::getInstance();
 
@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
     LoginDialog loginDialog;
 
     if (loginDialog.exec() == QDialog::Rejected) {
-        qCritical() << "Login dialog are closed!" << endl;
+        qCritical() << "Login dialog are closed!" << '\n';
     }
 
     return application.exec();

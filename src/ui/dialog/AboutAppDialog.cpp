@@ -60,6 +60,10 @@ void AboutAppDialog::initUI() {
     mLayout = new QVBoxLayout;
     mLayout->addWidget(mInfoArea);
     mLayout->addLayout(horizontalLayout);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mLayout->setMargin(10);
+#else
+    mLayout->setContentsMargins(10, 10, 10, 10);
+#endif
     mLayout->setSpacing(10);
 }

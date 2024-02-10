@@ -27,8 +27,7 @@
 #include <QToolButton>
 
 CalendarDialog::CalendarDialog(const QString& title)
-    : QDialog()
-    , mListener(new CalendarTaskListener(this)) {
+    : QDialog() {
     setWindowTitle(title);
     setObjectName("calendar-dialog");
 
@@ -43,7 +42,6 @@ CalendarDialog::CalendarDialog(const QString& title)
 }
 
 CalendarDialog::~CalendarDialog() {
-    delete mListener;
 }
 
 void CalendarDialog::initUI() {
@@ -59,14 +57,26 @@ void CalendarDialog::initUI() {
     nextMonth->setIcon(QIcon(":res/image/type/forward.png"));
 
     QObject::connect(mCalendar, SIGNAL(clicked(QDate)),
-                     mListener, SLOT(selectDate()));
+                     this, SLOT(selectDate()));
 
     mLayout = new QVBoxLayout;
     mLayout->addWidget(mCalendar);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mLayout->setMargin(10);
+#else
+    mLayout->setContentsMargins(10, 10, 10, 10);
+#endif
     mLayout->setSpacing(10);
 }
 
-QCalendarWidget* CalendarDialog::getCalendar() const {
-    return mCalendar;
+void CalendarDialog::selectDate() {
+    const QString format = "dd-MM-yyyy_hh:mm:ss";
+
+    const QString selectDate = mCalendar->selectedDate().toString(format);
+    [[maybe_unused]] const QDateTime selectDateTime = QDateTime::fromString(selectDate, format);
+
+    /*
+    mTimestampEdit->setDateTime(selectDateTime);
+    */
+    close();
 }

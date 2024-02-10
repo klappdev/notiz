@@ -33,25 +33,15 @@
 #include <QDialogButtonBox>
 #include <QBoxLayout>
 
-#include "event/dialog/LoginAccountListener.hpp"
-
-class LoginAccountListener;
-
 class LoginDialog final : public QDialog {
     Q_OBJECT
 public:
     explicit LoginDialog(QWidget* parent = nullptr);
     ~LoginDialog();
 
-    LoginAccountListener* getListener() const;
-
-    void setUserName(const QString& name);
-    void setPassword(const QString& password);
-
-    QString getUserName() const;
-    QString getPassword() const;
-
-    QLineEdit* getPasswordEdit();
+public slots:
+    void successLoad();
+    void changeMode(bool changed);
 
 private:
     void setupUI();
@@ -71,6 +61,4 @@ private:
     QCheckBox* mChangeModeCheckBox;
 
     QDialogButtonBox* mButtons;
-
-    LoginAccountListener* mListener;
 };

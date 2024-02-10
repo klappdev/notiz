@@ -35,9 +35,7 @@
 #include <QPushButton>
 
 #include "ui/tab/StartPanel.hpp"
-#include "event/dialog/EditTaskListener.hpp"
 
-class EditTaskListener;
 class StartPanel;
 
 class EditTaskDialog final : public QDialog {
@@ -53,14 +51,13 @@ public:
     QDateTimeEdit* getTimestampEdit() const;
     QTextEdit* getDescriptionEdit() const;
 
-    QPushButton* getConfirmButton() const;
-    QPushButton* getCancelButton() const;
-
-    StartPanel* getParent() const;
-    void setParent(StartPanel* panel);
-
     void setNumberRow(qint32 row);
-    qint32 getNumberRow() const;
+
+public slots:
+    void confirm();
+    void cancel();
+
+    void selectDate();
 
 private:
     void initUI();
@@ -72,7 +69,6 @@ private:
 
     void initControlRegion();
 
-    EditTaskListener* mListener;
     StartPanel* mPanel;
 
     QBoxLayout* mVerticalBox;

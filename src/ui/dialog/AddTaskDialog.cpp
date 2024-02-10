@@ -23,10 +23,15 @@
  */
 
 #include "ui/dialog/AddTaskDialog.hpp"
+#include "db/TaskDao.hpp"
 
-AddTaskDialog::AddTaskDialog(const QString & title)
-    : mListener(new AddTaskListener(this))
-    , mPanel(nullptr) {
+#include "ui/util/UiUtil.hpp"
+#include "ui/dialog/CalendarDialog.hpp"
+
+static constexpr const char* const TAG = "[AddTaskDialog] ";
+
+AddTaskDialog::AddTaskDialog(const QString& title)
+    : mPanel(nullptr) {
     setWindowTitle(title);
     setObjectName("add-task-dialog");
 
@@ -41,7 +46,6 @@ AddTaskDialog::AddTaskDialog(const QString & title)
 }
 
 AddTaskDialog::~AddTaskDialog() {
-    delete mListener;
 }
 
 void AddTaskDialog::initUI() {
@@ -63,7 +67,11 @@ void AddTaskDialog::initUI() {
     mVerticalBox->addStretch(1);
 
     mVerticalBox->addLayout(mControlLayout);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mVerticalBox->setMargin(10);
+#else
+    mVerticalBox->setContentsMargins(10, 10, 10, 10);
+#endif
     mVerticalBox->setSpacing(10);
 }
 
@@ -83,13 +91,21 @@ void AddTaskDialog::initFlagRegion() {
     mCompleteLayout = new QHBoxLayout;
     mCompleteLayout->addWidget(mCompleteLabel);
     mCompleteLayout->addWidget(mCompleteCheckBox);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mCompleteLayout->setMargin(5);
+#else
+    mCompleteLayout->setContentsMargins(5, 5, 5, 5);
+#endif
     mCompleteLayout->setSpacing(5);
 
     mFavoriteLayout = new QHBoxLayout;
     mFavoriteLayout->addWidget(mFavoriteLabel);
     mFavoriteLayout->addWidget(mFavoriteCheckBox);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mFavoriteLayout->setMargin(5);
+#else
+    mFavoriteLayout->setContentsMargins(5, 5, 5, 5);
+#endif
     mFavoriteLayout->setSpacing(5);
 }
 
@@ -102,13 +118,21 @@ void AddTaskDialog::initTimestampRegion() {
 
     QBoxLayout* horizontalLayout = new QHBoxLayout;
     horizontalLayout->addWidget(mTimestampEdit);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     horizontalLayout->setMargin(5);
+#else
+    horizontalLayout->setContentsMargins(5, 5, 5, 5);
+#endif
     horizontalLayout->setSpacing(5);
 
     mTimestampLayout = new QVBoxLayout;
     mTimestampLayout->addWidget(mTimestampLabel);
     mTimestampLayout->addLayout(horizontalLayout);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mTimestampLayout->setMargin(5);
+#else
+    mTimestampLayout->setContentsMargins(5, 5, 5, 5);
+#endif
     mTimestampLayout->setSpacing(5);
 }
 
@@ -121,7 +145,11 @@ void AddTaskDialog::initNameRegion() {
     mNameLayout = new QVBoxLayout;
     mNameLayout->addWidget(mNameLabel);
     mNameLayout->addWidget(mNameEdit);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mNameLayout->setMargin(5);
+#else
+    mNameLayout->setContentsMargins(5, 5, 5, 5);
+#endif
     mNameLayout->setSpacing(5);
 }
 
@@ -134,7 +162,11 @@ void AddTaskDialog::initDescriptionRegion() {
     mDescriptionLayout = new QVBoxLayout;
     mDescriptionLayout->addWidget(mDescriptionLabel);
     mDescriptionLayout->addWidget(mDescriptionEdit);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mDescriptionLayout->setMargin(5);
+#else
+    mDescriptionLayout->setContentsMargins(5, 5, 5, 5);
+#endif
     mDescriptionLayout->setSpacing(5);
 }
 
@@ -146,49 +178,72 @@ void AddTaskDialog::initControlRegion() {
     mCancelButton->setObjectName("cancel-button");
 
     QObject::connect(mConfirmButton, SIGNAL(clicked()),
-                     mListener,      SLOT(confirm()));
+                     this, SLOT(confirm()));
     QObject::connect(mCancelButton,  SIGNAL(clicked()),
-                     mListener,      SLOT(cancel()));
+                     this, SLOT(cancel()));
 
     mControlLayout = new QHBoxLayout;
     mControlLayout->addWidget(mConfirmButton);
     mControlLayout->addWidget(mCancelButton);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mControlLayout->setMargin(10);
+#else
+    mControlLayout->setContentsMargins(5, 5, 5, 5);
+#endif
     mControlLayout->setSpacing(5);
 }
 
-QCheckBox* AddTaskDialog::getCompleteCheckBox() const {
-    return mCompleteCheckBox;
+void AddTaskDialog::confirm() {
+    const bool completed = mCompleteCheckBox->isChecked();
+    const bool favorited = mFavoriteCheckBox->isChecked();
+
+    const QString timestamp = mTimestampEdit->text();
+    const QString name = mNameEdit->text();
+    const QString description = mDescriptionEdit->toPlainText();
+
+    //FIXME: add regex check timestamp
+    if (!timestamp.isEmpty() && !name.isEmpty() && !description.isEmpty()) {
+        const Task task = {
+            .id = 0,
+            .idAccount = 1,
+            .completed = completed,
+            .favorited = favorited,
+            .timestamp = timestamp,
+            .name = name,
+            .description = description
+        };
+
+        const bool success = TaskDao::getInstance().add(task);
+
+        UiUtil::showInfoMessage(tr("Add task"),
+                                success ? tr("Task was added success!")
+                                        : tr("Can't add task error"));
+
+        mDescriptionEdit->setText("");
+
+        mCompleteCheckBox->setChecked(false);
+        mFavoriteCheckBox->setChecked(false);
+
+        cancel();
+    } else {
+        UiUtil::showErrorMessage(tr("Incorrect data was input"),
+                                 tr("Input data are not correct!"));
+    }
 }
 
-QCheckBox* AddTaskDialog::getFavoriteCheckBox() const {
-    return mFavoriteCheckBox;
+void AddTaskDialog::cancel() {
+    //reject();
+    close();
+    mPanel->updateTable();
+
+    qInfo() << TAG << "Close add task dialog" << '\n';
 }
 
-QDateTimeEdit* AddTaskDialog::getTimestampEdit() const {
-    return mTimestampEdit;
-}
+void AddTaskDialog::selectDate() {
+    CalendarDialog dialog(tr("Calendar"));
+    dialog.setParent(this);
 
-QLineEdit* AddTaskDialog::getNameEdit() const {
-    return mNameEdit;
-}
-
-QTextEdit* AddTaskDialog::getDescriptionEdit() const {
-    return mDescriptionEdit;
-}
-
-QPushButton* AddTaskDialog::getConfirmButton() const {
-    return mConfirmButton;
-}
-
-QPushButton* AddTaskDialog::getCancelButton() const {
-    return mCancelButton;
-}
-
-StartPanel* AddTaskDialog::getParent() const {
-    return mPanel;
-}
-
-void AddTaskDialog::setParent(StartPanel* parent) {
-    mPanel = parent;
+    if (dialog.exec() == QDialog::Accepted) {
+        qInfo() << TAG << "Dialog was closed!" << '\n';
+    }
 }

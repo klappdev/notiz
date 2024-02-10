@@ -23,12 +23,17 @@
  */
 
 #include "ui/dialog/EditTaskDialog.hpp"
+#include "ui/util/UiUtil.hpp"
+#include "ui/dialog/CalendarDialog.hpp"
+
+#include "db/TaskDao.hpp"
 
 #include <QLineEdit>
 
+static constexpr const char* const TAG = "[EditTaskListener] ";
+
 EditTaskDialog::EditTaskDialog(const QString& title)
     : QDialog()
-    , mListener(new EditTaskListener(this))
     , mPanel(nullptr) {
     setWindowTitle(title);
     setObjectName("edit-task-dialog");
@@ -43,7 +48,6 @@ EditTaskDialog::EditTaskDialog(const QString& title)
 }
 
 EditTaskDialog::~EditTaskDialog() {
-    delete mListener;
 }
 
 void EditTaskDialog::initUI() {
@@ -65,7 +69,11 @@ void EditTaskDialog::initUI() {
     mVerticalBox->addStretch(1);
 
     mVerticalBox->addLayout(mControlLayout);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mVerticalBox->setMargin(10);
+#else
+    mVerticalBox->setContentsMargins(10, 10, 10, 10);
+#endif
     mVerticalBox->setSpacing(10);
 }
 
@@ -82,13 +90,21 @@ void EditTaskDialog::initFlagRegion() {
     mCompleteLayout = new QHBoxLayout;
     mCompleteLayout->addWidget(mCompleteLabel);
     mCompleteLayout->addWidget(mCompleteCheckBox);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mCompleteLayout->setMargin(5);
+#else
+    mCompleteLayout->setContentsMargins(10, 10, 10, 10);
+#endif
     mCompleteLayout->setSpacing(5);
 
     mFavoriteLayout = new QHBoxLayout;
     mFavoriteLayout->addWidget(mFavoriteLabel);
     mFavoriteLayout->addWidget(mFavoriteCheckBox);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mFavoriteLayout->setMargin(5);
+#else
+    mFavoriteLayout->setContentsMargins(5, 5, 5, 5);
+#endif
     mFavoriteLayout->setSpacing(5);
 }
 
@@ -101,13 +117,21 @@ void EditTaskDialog::initTimestampRegion() {
 
     QBoxLayout* horizontalLayout = new QHBoxLayout;
     horizontalLayout->addWidget(mTimestampEdit);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     horizontalLayout->setMargin(5);
+#else
+    horizontalLayout->setContentsMargins(5, 5, 5, 5);
+#endif
     horizontalLayout->setSpacing(5);
 
     mTimestampLayout = new QVBoxLayout;
     mTimestampLayout->addWidget(mTimestampLabel);
     mTimestampLayout->addLayout(horizontalLayout);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mTimestampLayout->setMargin(5);
+#else
+    mTimestampLayout->setContentsMargins(5, 5, 5, 5);
+#endif
     mTimestampLayout->setSpacing(5);
 }
 
@@ -120,7 +144,11 @@ void EditTaskDialog::initNameRegion() {
     mNameLayout = new QVBoxLayout;
     mNameLayout->addWidget(mNameLabel);
     mNameLayout->addWidget(mNameEdit);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mNameLayout->setMargin(5);
+#else
+    mNameLayout->setContentsMargins(5, 5, 5, 5);
+#endif
     mNameLayout->setSpacing(5);
 }
 
@@ -133,7 +161,11 @@ void EditTaskDialog::initDescriptionRegion() {
     mDescriptionLayout = new QVBoxLayout;
     mDescriptionLayout->addWidget(mDescriptionLabel);
     mDescriptionLayout->addWidget(mDescriptionEdit);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mDescriptionLayout->setMargin(5);
+#else
+    mDescriptionLayout->setContentsMargins(5, 5, 5, 5);
+#endif
     mDescriptionLayout->setSpacing(5);
 }
 
@@ -145,15 +177,70 @@ void EditTaskDialog::initControlRegion() {
     mCancelButton->setObjectName("cancel-button");
 
     QObject::connect(mConfirmButton, SIGNAL(clicked()),
-                     mListener,      SLOT(confirm()));
+                     this, SLOT(confirm()));
     QObject::connect(mCancelButton,  SIGNAL(clicked()),
-                     mListener,      SLOT(cancel()));
+                     this, SLOT(cancel()));
 
     mControlLayout = new QHBoxLayout;
     mControlLayout->addWidget(mConfirmButton);
     mControlLayout->addWidget(mCancelButton);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mControlLayout->setMargin(10);
+#else
+    mControlLayout->setContentsMargins(10, 10, 10, 10);
+#endif
     mControlLayout->setSpacing(5);
+}
+
+void EditTaskDialog::confirm() {
+    const qint32 number  = mNumberRow;
+    const bool completed = mCompleteCheckBox->isChecked();
+    const bool favorited = mFavoriteCheckBox->isChecked();
+
+    const QString timestamp = mTimestampEdit->text();
+    const QString name = mNameEdit->text();
+    const QString description = mDescriptionEdit->toPlainText();
+
+    //FIXME: add regex check timestamp
+    if (!timestamp.isEmpty() && !description.isEmpty()) {
+        const Task task = {
+            .id = number,
+            .idAccount = 1,
+            .completed = completed,
+            .favorited = favorited,
+            .timestamp = timestamp,
+            .name = name,
+            .description = description
+        };
+
+        const bool success = TaskDao::getInstance().update(task);
+
+        UiUtil::showInfoMessage(tr("Edit task"),
+                                success ? tr("Task was edited success!")
+                                        : tr("Can't edit work error"));
+
+        cancel();
+    } else {
+        UiUtil::showErrorMessage(tr("Incorrect data was input"),
+                                 tr("Input data are not correct!"));
+    }
+}
+
+void EditTaskDialog::cancel() {
+    //reject();
+    close();
+    mPanel->updateTable();
+
+    qInfo() << "close edit task dialog" << '\n';
+}
+
+void EditTaskDialog::selectDate() {
+    CalendarDialog dialog(tr("Calendar"));
+    dialog.setParent(this);
+
+    if (dialog.exec() == QDialog::Accepted) {
+        qInfo() << TAG << "Dialog was closed!" << '\n';
+    }
 }
 
 QCheckBox* EditTaskDialog::getCompleteCheckBox() const {
@@ -176,26 +263,6 @@ QTextEdit* EditTaskDialog::getDescriptionEdit() const {
     return mDescriptionEdit;
 }
 
-QPushButton* EditTaskDialog::getConfirmButton() const {
-    return mConfirmButton;
-}
-
-QPushButton* EditTaskDialog::getCancelButton() const {
-    return mCancelButton;
-}
-
-StartPanel* EditTaskDialog::getParent() const {
-    return mPanel;
-}
-
-void EditTaskDialog::setParent(StartPanel* parent) {
-    mPanel = parent;
-}
-
 void EditTaskDialog::setNumberRow(qint32 row) {
     mNumberRow = row;
-}
-
-qint32 EditTaskDialog::getNumberRow() const {
-    return mNumberRow;
 }

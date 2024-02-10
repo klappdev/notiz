@@ -28,18 +28,23 @@
 #include "ui/tab/CalendarPanel.hpp"
 #include "ui/tab/SettingsPanel.hpp"
 
+#include "ui/util/UiUtil.hpp"
+#include "ui/dialog/LoginDialog.hpp"
 #include "setting/AppSettings.hpp"
 
 #include <QApplication>
 #include <QLabel>
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
 #include <QDesktopWidget>
+#else
+#include <QScreen>
+#endif
 
 static constexpr const char* const TAG =  "[MainWindow] ";
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
-    , mTimer(new QTimer())
-    , mListener(new ControlListener(this)) {
+    , mTimer(new QTimer()) {
     setObjectName("main-window");
     setWindowTitle(tr("Notice"));
 
@@ -52,7 +57,11 @@ MainWindow::MainWindow(QWidget* parent)
     initTimer();
 
     mMainLayout = new QHBoxLayout;
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mMainLayout->setMargin(5);
+#else
+    mMainLayout->setContentsMargins(5, 5, 5, 5);
+#endif
     mMainLayout->setSpacing(5);
 
     mMainLayout->addWidget(mTabs);
@@ -64,7 +73,6 @@ MainWindow::MainWindow(QWidget* parent)
 }
 
 MainWindow::~MainWindow() {
-    delete mListener;
     delete mTimer;
 }
 
@@ -80,15 +88,13 @@ void MainWindow::closeEvent(QCloseEvent* /*event*/) {
     if (AppSettings::getInstance().isNotified()) {
         mTimer->stop();
     }
-
-    mListener->exit();
 }
 
 void MainWindow::initTimer() {
     mTimer->setInterval(60 * 1000);   /* 1m */
 
     QObject::connect(mTimer, SIGNAL(timeout()),
-                     mListener,  SLOT(notifyTasks()));
+                     this,   SLOT(notifyTasks()));
 }
 
 void MainWindow::initTabs() {
@@ -112,7 +118,11 @@ void MainWindow::initStartPage(PageTab tab) {
     mStartPanel = new StartPanel;
 
     QBoxLayout* verticalBox = new QVBoxLayout;
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     verticalBox->setMargin(5);
+#else
+    verticalBox->setContentsMargins(5, 5, 5, 5);
+#endif
     verticalBox->setSpacing(5);
 
     verticalBox->addWidget(mStartPanel);
@@ -124,13 +134,16 @@ void MainWindow::initFavoritePage(PageTab tab) {
     QWidget* favoritePage = mTabs->widget(static_cast<int>(tab));
 
     auto* favoritePanel = new FavoritePanel;
-    FavoriteListener* listener = favoritePanel->getListener();
 
     QObject::connect(mTabs,  SIGNAL(tabBarClicked(int)),
-                     listener, SLOT(updateTasks(int)));
+                     favoritePanel, SLOT(updateTasks(int)));
 
     QBoxLayout* verticalBox = new QVBoxLayout;
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     verticalBox->setMargin(5);
+#else
+    verticalBox->setContentsMargins(5, 5, 5, 5);
+#endif
     verticalBox->setSpacing(5);
     verticalBox->addWidget(favoritePanel);
 
@@ -141,13 +154,16 @@ void MainWindow::initCompletePage(PageTab tab) {
     QWidget* completePage = mTabs->widget(static_cast<int>(tab));
 
     auto* completePanel = new CompletePanel;
-    CompleteListener* listener = completePanel->getListener();
 
     QObject::connect(mTabs,  SIGNAL(tabBarClicked(int)),
-                     listener, SLOT(updateTasks(int)));
+                     completePanel, SLOT(updateTasks(int)));
 
     QBoxLayout* verticalBox = new QVBoxLayout;
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     verticalBox->setMargin(5);
+#else
+    verticalBox->setContentsMargins(5, 5, 5, 5);
+#endif
     verticalBox->setSpacing(5);
     verticalBox->addWidget(completePanel);
 
@@ -157,14 +173,17 @@ void MainWindow::initCompletePage(PageTab tab) {
 void MainWindow::initCalendarPage(PageTab tab) {
     QWidget* calendarPage = mTabs->widget(static_cast<int>(tab));
 
-    auto* calendarPanel = new CalendarPanel;
-    CalendarListener* listener = calendarPanel->getListener();
+    CalendarPanel* calendarPanel = new CalendarPanel;
 
     connect(mTabs,  SIGNAL(tabBarClicked(int)),
-            listener, SLOT(updateCalendar(int)));
+            calendarPanel, SLOT(updateCalendar(int)));
 
     QBoxLayout* verticalBox = new QVBoxLayout;
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     verticalBox->setMargin(5);
+#else
+    verticalBox->setContentsMargins(5, 5, 5, 5);
+#endif
     verticalBox->setSpacing(5);
     verticalBox->addWidget(calendarPanel);
 
@@ -175,13 +194,16 @@ void MainWindow::initSettingsPage(PageTab tab) {
     QWidget* settingsPage = mTabs->widget(static_cast<int>(tab));
 
     auto* settingsPanel = new SettingsPanel;
-    SettingsListener* listener = settingsPanel->getListener();
 
     connect(mTabs,  SIGNAL(tabBarClicked(int)),
-            listener, SLOT(loadConfiguration(int)));
+            settingsPanel, SLOT(loadConfiguration(int)));
 
     QBoxLayout* verticalBox = new QVBoxLayout;
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     verticalBox->setMargin(5);
+#else
+    verticalBox->setContentsMargins(5, 5, 5, 5);
+#endif
     verticalBox->setSpacing(5);
 
     verticalBox->addWidget(settingsPanel);
@@ -190,13 +212,42 @@ void MainWindow::initSettingsPage(PageTab tab) {
 }
 
 void MainWindow::setCenter() {
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     const QRect rectangle = QApplication::desktop()->availableGeometry(this);
+#else
+    const QRect rectangle = QGuiApplication::primaryScreen()->availableGeometry();
+#endif
     const QPoint center = rectangle.center();
 
     move(center.x() - width() * 0.5, center.y() - height() * 0.5);
 }
 
-StartPanel *MainWindow::getStartPanel() const {
+void MainWindow::notifyTasks() {
+    const QString format = "dd-MM-yyyy_hh:mm";
+    const QList<Task>& tasks = mStartPanel->getModel()->getTasks();
+
+    for (const Task& task : tasks) {
+        /* without seconds */
+        const QString currentDateTime = QDateTime::currentDateTime().toString(format);
+        const QString taskDateTime = task.timestamp.left(task.timestamp.lastIndexOf(':'));
+
+        if (currentDateTime == taskDateTime) {
+            UiUtil::showInfoMessage(tr("Notify task"),
+                                    tr("Start notify task: %1\n").arg(task.name));
+        }
+    }
+}
+
+void MainWindow::exit() {
+    auto* loginDialog = static_cast<LoginDialog*>(UiUtil::getLoginWindow());
+    Q_CHECK_PTR(loginDialog);
+    AppSettings::getInstance().store();
+
+    loginDialog->reject();
+    qApp->quit();
+}
+
+StartPanel* MainWindow::getStartPanel() const {
     return mStartPanel;
 }
 

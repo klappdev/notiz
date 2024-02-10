@@ -54,9 +54,9 @@ auto AccountDao::createConnection() -> QSqlDatabase {
     mDatabase.setDatabaseName(databaseFile.absolutePath());
 
     if (!mDatabase.open()) {
-        qCritical() << TAG << "Can't open db: " << mDatabase.lastError() << endl;
+        qCritical() << TAG << "Can't open db: " << mDatabase.lastError() << '\n';
     } else {
-        qInfo() << TAG << "DB connected!" << endl;
+        qInfo() << TAG << "DB connected!" << '\n';
     }
 
     return database;
@@ -68,9 +68,9 @@ void AccountDao::createTable() {
                                 login VARCHAR(255),
                                 password VARCHAR(255));
                         )xxx")) {
-        qCritical() << TAG << "Table account was not created!" << mDatabase.lastError() << endl;
+        qCritical() << TAG << "Table account was not created!" << mDatabase.lastError() << '\n';
     } else {
-        qInfo() << TAG << "Table account was created!" << endl;
+        qInfo() << TAG << "Table account was created!" << '\n';
     }
 
     mSqlQuery.executedQuery();
@@ -199,7 +199,7 @@ auto AccountDao::getAll() -> QList<Account> {
     Account account;
 
     if (!mSqlQuery.exec("SELECT * FROM account;")) {
-       qCritical() << TAG << "select all account error:  " << mSqlQuery.lastError() << endl;
+       qCritical() << TAG << "select all account error:  " << mSqlQuery.lastError() << '\n';
     }
 
     mSqlRecord = mSqlQuery.record();

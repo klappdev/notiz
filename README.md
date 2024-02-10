@@ -2,7 +2,7 @@
 
 Qt widgets application for manage notices.
 
-![List of lessons](files/notiz_1.png "Notiz")
+![List of notices](files/notiz_1.png "Notiz")
 
 ## Building
 Perform the following actions for building project:
@@ -15,4 +15,4 @@ make
 
 ## Requirements
 C++17 <br/>
-Qt 5.10<br/>
+Qt 5<br/>

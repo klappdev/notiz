@@ -33,12 +33,15 @@ static constexpr const char* const TAG =  "[FavoritePanel] ";
 
 FavoritePanel::FavoritePanel(QWidget *parent)
     : QGroupBox(parent)
-    , mModel(new TaskModel)
-    , mListener(new FavoriteListener(this)) {
+    , mModel(new TaskModel) {
     setObjectName("favorite-panel");
 
     mLayout = new QVBoxLayout;
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mLayout->setMargin(20);
+#else
+    mLayout->setContentsMargins(20, 20, 20, 20);
+#endif
     mLayout->setSpacing(20);
 
     initTable();
@@ -49,7 +52,6 @@ FavoritePanel::FavoritePanel(QWidget *parent)
 
 FavoritePanel::~FavoritePanel() {
     delete mModel;
-    delete mListener;
 }
 
 void FavoritePanel::initTable() {
@@ -73,16 +75,24 @@ void FavoritePanel::initButtons() {
     mUpdateButton->setObjectName("update-button");
 
     QObject::connect(mUpdateButton, SIGNAL(clicked()),
-                     mListener,     SLOT(showUpdateTask()));
+                     this, SLOT(showUpdateTask()));
 
     QBoxLayout* horizontalLayout = new QHBoxLayout;
     horizontalLayout->addStretch(1);
     horizontalLayout->addWidget(mUpdateButton);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     horizontalLayout->setMargin(5);
+#else
+    horizontalLayout->setContentsMargins(5, 5, 5, 5);
+#endif
     horizontalLayout->setSpacing(10);
 
     mLayout->addLayout(horizontalLayout);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mLayout->setMargin(10);
+#else
+    mLayout->setContentsMargins(10, 10, 10, 10);
+#endif
     mLayout->setSpacing(10);
 }
 
@@ -105,17 +115,18 @@ void FavoritePanel::setupModel() {
     mTable->setModel(mModel);
 }
 
-//FIXME: move to Listener
 void FavoritePanel::updateTable() {
     QList<Task> list = TaskDao::getInstance().getAllFavorite();
 
     mModel->setTasks(std::move(list));
 }
 
-QTableView* FavoritePanel::getTable() const {
-    return mTable;
+void FavoritePanel::showUpdateTask() {
+    updateTable();
 }
 
-FavoriteListener* FavoritePanel::getListener() const {
-    return mListener;
+void FavoritePanel::updateTasks(int index) {
+    Q_UNUSED(index);
+
+    updateTable();
 }

@@ -34,7 +34,7 @@ TaskCalendar::TaskCalendar(QWidget* parent)
 
 TaskCalendar::~TaskCalendar() {}
 
-void TaskCalendar::paintCell(QPainter* painter, const QRect& rect, const QDate& date) const {
+void TaskCalendar::paintCell(QPainter* painter, const QRect& rect, QDate date) const {
     QCalendarWidget::paintCell(painter, rect, date);
     mCounter = 0;
 
@@ -70,7 +70,7 @@ void TaskCalendar::retranslateUi() {
 
     setLocale(QLocale(language));
 
-    qCritical() << TAG << "Change language: " << language << endl;
+    qCritical() << TAG << "Change language: " << language << '\n';
 }
 
 void TaskCalendar::setListTask(const QList<Task>& tasks) {

@@ -56,7 +56,7 @@ namespace UiUtil {
         const QObjectList list = getMainWindow()->findChildren<QObject*>();
 
         for (QObject* child : list) {
-            qDebug() << child->objectName() << endl;
+            qDebug() << child->objectName();
         }
     }
 

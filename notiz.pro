@@ -1,6 +1,6 @@
-QT += core gui sql
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT += widgets core gui sql
+greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
 
 TARGET = notiz
 TEMPLATE = app
@@ -26,19 +26,7 @@ HEADERS  += include/ui/main/MainWindow.hpp          \
         include/ui/dialog/LoginDialog.hpp           \
         include/ui/dialog/AddTaskDialog.hpp         \
         include/ui/dialog/EditTaskDialog.hpp        \
-                                                    \
-        include/event/dialog/AddTaskListener.hpp      \
-        include/event/dialog/LoginAccountListener.hpp \
-        include/event/dialog/EditTaskListener.hpp     \
-        include/event/dialog/CalendarTaskListener.hpp \
                                                       \
-        include/event/tab/SettingsListener.hpp        \
-        include/event/tab/CalendarListener.hpp        \
-        include/event/tab/StartListener.hpp           \
-        include/event/tab/FavoriteListener.hpp        \
-        include/event/tab/CompleteListener.hpp        \
-        include/event/ControlListener.hpp             \
-                                                    \
         include/model/TaskModel.hpp                 \
                                                     \
         include/setting/AppSettings.hpp             \
@@ -69,19 +57,7 @@ SOURCES += main.cpp                             \
         src/ui/dialog/AddTaskDialog.cpp         \
         src/ui/dialog/EditTaskDialog.cpp        \
         src/ui/dialog/AboutAppDialog.cpp        \
-                                                \
-        src/event/dialog/AddTaskListener.cpp      \
-        src/event/dialog/EditTaskListener.cpp     \
-        src/event/dialog/LoginAccountListener.cpp \
-        src/event/dialog/CalendarTaskListener.cpp \
                                                   \
-        src/event/tab/CalendarListener.cpp        \
-        src/event/tab/StartListener.cpp           \
-        src/event/tab/FavoriteListener.cpp        \
-        src/event/tab/CompleteListener.cpp        \
-        src/event/tab/SettingsListener.cpp        \
-        src/event/ControlListener.cpp             \
-                                                \
         src/model/TaskModel.cpp                 \
                                                 \
         src/setting/AppSettings.cpp             \

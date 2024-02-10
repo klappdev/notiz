@@ -23,14 +23,17 @@
  */
 
 #include "ui/dialog/LoginDialog.hpp"
+#include "ui/util/UiUtil.hpp"
+
+#include "ui/main/MainWindow.hpp"
+#include "db/AccountDao.hpp"
 
 #include <QApplication>
 #include <QPushButton>
 #include <QStringList>
 
 LoginDialog::LoginDialog(QWidget* parent)
-    : QDialog(parent)
-    , mListener(new LoginAccountListener(this)) {
+    : QDialog(parent) {
     setWindowTitle(tr("Login account"));
     setObjectName("login-window");
 
@@ -44,7 +47,6 @@ LoginDialog::LoginDialog(QWidget* parent)
 }
 
 LoginDialog::~LoginDialog() {
-    delete mListener;
 }
 
 void LoginDialog::setupUI() {
@@ -65,7 +67,11 @@ void LoginDialog::setupUI() {
 
     mMainLayout->setAlignment(mAvatarLabel, Qt::AlignHCenter);
     mMainLayout->setAlignment(mButtons, Qt::AlignHCenter);
+#if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
     mMainLayout->setMargin(30);
+#else
+    mMainLayout->setContentsMargins(30, 30, 30, 30);
+#endif
     mMainLayout->setSpacing(20);
 
     setLayout(mMainLayout);
@@ -106,32 +112,33 @@ void LoginDialog::setupBottomRegion() {
                      qApp,                                       SLOT(quit()));
 
     QObject::connect(mButtons->button(QDialogButtonBox::Ok), SIGNAL(clicked()),
-                     mListener,                              SLOT(successLoad()));
+                     this, SLOT(successLoad()));
 
     QObject::connect(mChangeModeCheckBox, SIGNAL(toggled(bool)),
-                     mListener,           SLOT(changeMode(bool)));
+                     this, SLOT(changeMode(bool)));
 }
 
-void LoginDialog::setPassword(const QString &password){
-    mPasswordEdit->setText(password);
+void LoginDialog::successLoad() {
+    auto* mMainWindow = static_cast<MainWindow*>(UiUtil::getMainWindow());
+    Q_CHECK_PTR(mMainWindow);
+
+    if (AccountDao::getInstance().checkIfExists(mUserNameEdit->text(), mPasswordEdit->text())) {
+        hide();
+
+        mMainWindow->show();
+    } else {
+        mUserNameEdit->setText("");
+        mPasswordEdit->setText("");
+
+        UiUtil::showErrorMessage(tr("Enter user in application"),
+                                 tr("Login and password was input incorrect!"));
+    }
 }
 
-void LoginDialog::setUserName(const QString& name){
-    mUserNameEdit->setText(name);
-}
-
-QString LoginDialog::getUserName() const {
-    return mUserNameEdit->text();
-}
-
-QString LoginDialog::getPassword() const {
-    return mPasswordEdit->text();
-}
-
-QLineEdit* LoginDialog::getPasswordEdit() {
-    return mPasswordEdit;
-}
-
-LoginAccountListener* LoginDialog::getListener() const {
-    return mListener;
+void LoginDialog::changeMode(bool changed) {
+    if (changed) {
+        mPasswordEdit->setEchoMode(QLineEdit::Password);
+    } else {
+        mPasswordEdit->setEchoMode(QLineEdit::Normal);
+    }
 }
